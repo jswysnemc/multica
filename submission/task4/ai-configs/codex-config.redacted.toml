@@ -1,0 +1,94 @@
+# 来源：$HOME/.codex/config.toml
+# 脱敏说明：
+# - 私有项目路径只保留类别和当前笔试仓库路径。
+# - API 代理地址、MCP token、搜索 API key、Authorization header 已脱敏。
+# - auth.json、history.jsonl、sqlite 日志未纳入交付。
+
+model_provider = "OpenAI"
+model = "gpt-5.5"
+model_instructions_file = "~/.codex/prompts/system-prompt.md"
+model_reasoning_effort = "xhigh"
+personality = "pragmatic"
+model_context_window = 272000
+disable_response_storage = true
+network_access = "enabled"
+model_auto_compact_token_limit = 272000
+
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+
+[tui]
+status_line = ["model-with-reasoning", "context-remaining", "git-branch", "current-dir"]
+
+[trusted_projects.summary]
+total = "80+"
+categories = [
+  "$HOME/workspace/*",
+  "$HOME/Desktop/*",
+  "$HOME/.claude/skills/*",
+  "$HOME/.config/*",
+  "$HOME/Downloads/*",
+  "/tmp",
+  "current_exam_repo"
+]
+
+[projects."$HOME/workspace/writeen_exam/test1/multica"]
+trust_level = "trusted"
+
+[notice]
+fast_default_opt_out = true
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-05-21T14:23:45Z"
+source_type = "local"
+source = "$HOME/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+# 当前 Codex MCP 块处于注释状态，保留真实结构但脱敏敏感值。
+# [mcp_servers.grok-search]
+# type = "stdio"
+# command = "uvx"
+# args = ["--from", "git+https://github.com/GuDaStudio/GrokSearch", "grok-search"]
+#
+# [mcp_servers.grok-search.env]
+# GROK_API_KEY = "<redacted>"
+# GROK_API_URL = "<redacted-api-proxy>"
+# TAVILY_API_KEY = "<redacted>"
+
+# [mcp_servers.augment-context-engine]
+# type = "stdio"
+# command = "auggie"
+# args = ["--mcp", "--mcp-auto-workspace"]
+#
+# [mcp_servers.augment-context-engine.env]
+# AUGMENT_API_TOKEN = "<redacted>"
+# AUGMENT_API_URL = "<redacted-api-proxy>"
+
+# [mcp_servers.context7]
+# type = "stdio"
+# command = "npx"
+# args = ["-y", "@upstash/context7-mcp"]
+
+# [mcp_servers.perplexity]
+# url = "<redacted-mcp-url>"
+#
+# [mcp_servers.perplexity.http_headers]
+# Authorization = "Bearer <redacted>"
+
+# [mcp_servers.codegraph]
+# command = "codegraph"
+# args = ["serve", "--mcp"]
+
+[model_providers.OpenAI]
+name = "OpenAI"
+base_url = "<redacted-api-proxy>"
+wire_api = "responses"
+requires_openai_auth = true

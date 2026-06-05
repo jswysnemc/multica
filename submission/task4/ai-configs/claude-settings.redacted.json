@@ -1,0 +1,58 @@
+{
+  "source": "$HOME/.claude/settings.json",
+  "redaction": {
+    "home": "$HOME",
+    "tokens": "<redacted>",
+    "api_proxy_urls": "<redacted-api-proxy>",
+    "credentials_files": "omitted",
+    "history_files": "omitted"
+  },
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "<redacted>",
+    "ANTHROPIC_BASE_URL": "<redacted-api-proxy>",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "oc-deepseek-v4-flash-free",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "minimax-m3",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "oc-deepseek-v4-flash-free",
+    "ANTHROPIC_MODEL": "opus[1m]",
+    "API_TIMEOUT_MS": "3000000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "0",
+    "ENABLE_TOOL_SEARCH": "true"
+  },
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "default_mode": "bypassPermissions",
+    "additionalDirectories": [
+      "$HOME/Desktop/projecies/dufs/assets",
+      "$HOME/.local/bin",
+      "/tmp",
+      "$HOME/.config/quickshell"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Grep|Glob",
+        "purpose": "提醒模型优先使用 fast-context、semble-search 或 ace-codebase-search 做语义代码检索；仅在精确字符串查找时使用 grep/glob。"
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "$HOME/.claude/ccline/ccline-debug.sh",
+    "padding": 0
+  },
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "document-skills@anthropic-agent-skills": true,
+    "frontend-design@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "clangd-lsp@claude-plugins-official": true
+  },
+  "language": "中文",
+  "autoUpdatesChannel": "stable",
+  "skipDangerousModePermissionPrompt": true
+}

@@ -2,120 +2,158 @@
 
 ## 4.1 AI 编程工具配置
 
-### 项目指令
+### 脱敏说明
 
-配置文件：
+本节提交真实配置的脱敏快照，不提交可直接复用的密钥或私有环境。
 
-- `CLAUDE.md`
-- `AGENTS.md`
-- `.github/copilot-instructions.md` 或同类仓库级指令
+脱敏规则：
+
+- `$HOME` 替代真实用户主目录。
+- `<redacted>` 替代 token、API key、cookie、密码、Authorization header。
+- `<redacted-api-proxy>` 替代私有模型代理地址。
+- `<private-ip>` 替代内网地址。
+- 历史授权命令中涉及远程主机、代理配置、一次性密码、私有路径的内容只保留类别摘要。
+- 不提交 `auth.json`、`.credentials.json`、history、sqlite 日志、会话缓存和浏览器 cookie。
+
+### 实际提交的配置文件
+
+- `task4/ai-configs/CLAUDE.redacted.md`：全局开发指令，来自 `$HOME/.claude/CLAUDE.md`。
+- `task4/ai-configs/codex-instructions.redacted.md`：Codex 短全局指令，来自 `$HOME/.codex/instructions.md`。
+- `task4/ai-configs/codex-config.redacted.toml`：Codex 真实配置快照，来自 `$HOME/.codex/config.toml`。
+- `task4/ai-configs/claude-settings.redacted.json`：Claude settings 真实结构快照，来自 `$HOME/.claude/settings.json`。
+- `task4/ai-configs/claude-settings-local.summary.md`：Claude 本地授权摘要，来自 `$HOME/.claude/settings.local.json`。
+- `task4/ai-configs/skills-inventory.redacted.md`：真实安装的 skills 清单，来自 `$HOME/.claude/skills`。
+- `task4/ai-configs/plugins-and-mcp.redacted.md`：Plugins 与 MCP 配置摘要，来自 Claude / Codex 本地配置。
+
+### 全局指令
 
 解决的问题：
 
-- 固化项目架构边界，例如 `packages/core`、`packages/ui`、`packages/views` 的依赖方向。
-- 约束状态管理策略，例如服务端状态归 React Query，客户端状态归 Zustand。
-- 统一提交、注释、翻译和代码风格，减少工具输出和项目规范冲突。
+- 统一输出风格，避免 AI 署名、Emoji、模板化结尾和不自然中文。
+- 把“正确、清晰、严谨”作为默认质量门槛，减少低质量抽象。
+- 固化检索优先级：未知代码位置先用 `fast-context`，失败后用 `semble-search`，`rg` 只做精确确认。
 
 生效场景：
 
-- 阅读陌生模块前，先读取项目根指令。
-- 修改跨包代码前，检查 package boundary。
-- 写中文文档或 UI 文案前，检查术语和语气规范。
+- 阅读陌生代码库前，先确认项目指令与全局指令是否冲突。
+- 写提交信息、PR 描述、中文文档时应用隐私和表达规范。
+- 需要全仓理解时，通过语义检索定位入口，再读取少量目标文件。
 
 迭代优化：
 
-- 把高频错误写成硬规则，例如 API 响应必须 parse，不直接 cast。
-- 把跨端差异写清楚，例如 mobile 只共享类型和纯函数。
-- 把命令写入项目指令，避免工具猜测测试和构建命令。
+- 把“禁止 AI 署名”和“UI 禁用 Emoji”放入全局规则，避免每个项目重复声明。
+- 把代码检索工具顺序写成硬规则，减少无边界全仓搜索。
+- 把中文风格约束写成自检项，降低交付文档的口语化和翻译腔。
 
-### 全局配置
+### Codex 配置
 
-配置文件示例：
+真实配置摘要：
 
-- `task4/ai-configs/codex-config.example.toml`
+- 模型提供方：`OpenAI`。
+- 默认模型：`gpt-5.5`。
+- 推理强度：`xhigh`。
+- 上下文窗口：`272000`。
+- 响应存储：`disable_response_storage = true`。
+- 网络：`network_access = "enabled"`。
+- 审批策略：`approval_policy = "never"`。
+- 沙箱：`sandbox_mode = "danger-full-access"`。
+- 状态栏：模型、上下文剩余、Git 分支、当前目录。
+- 插件：`documents`、`spreadsheets`、`presentations` 启用。
+- 当前仓库：`$HOME/workspace/writeen_exam/test1/multica` 标记为 trusted。
 
 解决的问题：
 
-- 约束默认工作目录、权限和网络行为。
-- 明确优先使用项目内检索工具，而不是直接全仓搜索。
-- 将常用模型、审批策略和命令习惯固定下来。
+- 适合长上下文代码审查和跨文件修改。
+- 本地工作流默认允许执行命令和网络访问，但通过人工规则约束破坏性操作。
+- 启用文档、表格、演示插件，用于多格式交付。
 
 生效场景：
 
-- 日常修复 bug。
-- 阅读大型代码库。
-- 编写测试和运行验证。
+- 多文件代码修改。
+- 本地测试和构建验证。
+- 文档、表格、演示等交付物生成。
 
 迭代优化：
 
-- 默认不使用破坏性 Git 命令。
-- 对网络搜索和源码搜索做工具分层。
-- 对文件编辑强制使用补丁，降低误改风险。
+- 关闭响应存储，降低隐私风险。
+- trusted project 只作为本地执行白名单，不提交完整私有路径清单。
+- MCP 配置保留为注释模板，启用前先确认密钥和代理地址。
 
-### 自定义 Skills
+### Claude 配置
 
-配置文件示例：
+真实配置摘要：
 
-- `task4/ai-configs/code-search-skill.example.md`
+- 语言：中文。
+- 模型环境：`ANTHROPIC_MODEL = "opus[1m]"`，其他默认模型映射见 `claude-settings.redacted.json`。
+- 非必要流量禁用：`CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1"`。
+- Tool Search：`ENABLE_TOOL_SEARCH = "true"`。
+- 权限模式：`acceptEdits` / `bypassPermissions`。
+- 额外可访问目录：`$HOME/.local/bin`、`/tmp`、若干本地配置目录。
+- PreToolUse hook：对 `Grep|Glob` 注入检索规范提醒。
+- 状态栏：本地 `ccline` 脚本。
 
 解决的问题：
 
-- 用语义检索快速定位陌生代码入口。
-- 把“先定位、再少量读取、再确认行号”的流程固化。
-- 避免无边界地全仓 grep。
+- 让模型在错误使用 grep/glob 前收到检索策略提醒。
+- 将中文输出、插件、状态栏和权限模式固定到全局。
+- 允许本地 CLI 与 MCP 工具协同工作。
 
 生效场景：
 
-- 追踪后端接口调用链。
-- 分析并发和状态机。
-- 查找测试覆盖位置。
+- 代码库考古。
+- GitHub issue / PR 阅读。
+- 官方文档检索。
+- 浏览器自动化和本地桌面验证。
 
 迭代优化：
 
-- 优先使用 fast-context。
-- fast-context 失败时切换 semble-search。
-- 只在已知文件范围内使用 `rg` 做精确确认。
+- 将历史授权命令放入 `settings.local.json`，交付时只提交摘要，不提交敏感命令正文。
+- 通过 hook 纠正工具选择，而不是只依赖提示词记忆。
+- 保留插件启用状态，减少每个项目重复配置。
 
-### MCP Server 与外部工具
+### Skills
 
-常用配置方向：
+真实安装分类：
 
-- 代码语义检索：fast-context、semble-search。
-- 官方文档检索：Context7 或智能搜索工具。
-- 数据库调试：只读连接，限制写权限。
-- 浏览器验证：使用独立浏览器上下文，避免污染个人会话。
+- 代码检索：`fast-context`、`semble-search`、`ace-codebase-search`、`code-search-tools-bundle`。
+- 网络搜索：`smart-search-cli`、`anysearch`、`zhihu-search`。
+- 浏览器和桌面自动化：`agent-browser`、`niri-use`。
+- 图像与图表：`gpt2api-image`、`drawio`、`mmdc-diagram-png`、`remotion-best-practices`、`ui-ux-pro-max`。
+- 垂直业务：`boss-agent-cli`、`snemc-blog-agent`、`tutor`。
 
 解决的问题：
 
-- 当前文档、框架 API 和线上行为可能变化，不能只依赖模型记忆。
-- 多服务系统需要在浏览器、数据库和日志之间交叉验证。
+- 代码检索 skill 解决陌生代码库定位问题。
+- 搜索 skill 解决外部资料时效性问题。
+- 浏览器和桌面 skill 解决 UI 验证、截图和真实交互问题。
+- 图表和文档 skill 支持交付材料生成。
 
 迭代优化：
 
-- 搜索外部技术文档时优先官方来源。
-- 对数据库工具默认只读，需要写入时显式切换。
-- 浏览器测试与真实个人浏览器隔离。
+- 语义检索优先，精确 grep 后置。
+- 技术文档优先 Context7 或官方来源，娱乐性搜索才用 anysearch。
+- 图表类需求优先 drawio 或 Mermaid，不混用 raster 图像生成。
 
-### IDE 插件和 Shell 辅助
+### Plugins 与 MCP
 
-常用项：
+真实启用插件：
 
-- GitHub Copilot：补全局部样板代码。
-- Cursor 或 Windsurf：对中型模块做上下文问答。
-- Codex CLI：在终端内执行跨文件修改、运行测试和整理补丁。
-- Shell alias：封装常用命令，例如单测、类型检查、数据库迁移。
+- Claude：`code-review`、`commit-commands`、`context7`、`document-skills`、`frontend-design`、`github`、`rust-analyzer-lsp`、`clangd-lsp`。
+- Codex：`documents`、`spreadsheets`、`presentations`。
+- MCP 工具：Context7、GitHub、Grok Search、Perplexity；Codex 侧还有 grok-search、augment-context-engine、context7、perplexity、codegraph 的注释模板。
 
 解决的问题：
 
-- 减少重复命令输入。
-- 将大模型用于分析和生成，将本地测试作为最终裁判。
-- 保留命令输出，便于复盘。
+- GitHub 插件用于 issue、PR、代码搜索和文件读取。
+- Context7 用于官方文档检索，避免依赖模型旧记忆。
+- LSP 插件用于语言级语义信息。
+- Codex 插件用于文档、表格、演示等非代码交付。
 
 迭代优化：
 
-- 对生成代码强制本地运行测试。
-- 对模型给出的路径和行号二次确认。
-- 对涉及凭据的配置只提交示例，不提交真实密钥。
+- GitHub 写操作仍优先通过 `gh` 完成，便于保留命令记录。
+- 搜索类 MCP 的代理 URL 和密钥不进入交付物。
+- 本地授权命令只提交分类摘要，避免暴露内网环境。
 
 ## 4.2 关键场景实录
 
